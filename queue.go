@@ -1,7 +1,6 @@
 package Queue
 
 import (
-	"errors"
 	"fmt"
 	"reflect"
 )
@@ -27,7 +26,7 @@ func (q *Queue) Len() int {
 // appends an item to the rear of queue
 func (q *Queue) Enqueue(item interface{}) (err error) {
 	if q.Len() == q.MAX {
-		err = errors.New(fmt.Sprintf("Buffer Overflow: MaxSize Allowed: %d", q.MAX))
+		err = fmt.Errorf("Buffer Overflow: MaxSize Allowed: %d", q.MAX)
 	} else {
 		q.list = append(q.list, item)
 	}
@@ -37,7 +36,7 @@ func (q *Queue) Enqueue(item interface{}) (err error) {
 // return the item deleted from the queue
 func (q *Queue) Dequeue() (item interface{}, err error) {
 	if q.Len() == 0 {
-		err = errors.New(fmt.Sprintf("Buffer Underflow"))
+		err = fmt.Errorf("Buffer Underflow")
 	} else {
 		item = q.list[0]
 		q.list = q.list[:0+copy(q.list[0:], q.list[1:])]
@@ -46,15 +45,22 @@ func (q *Queue) Dequeue() (item interface{}, err error) {
 }
 
 // returns nil if queue is empty else returns the queue as a slice
-// panics in case if items are of different types in queue.
-func (q *Queue) ToSlice() interface{} {
+// error in case if items are of different types in queue.
+func (q *Queue) ToSlice() (slice interface{}, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			slice = q.list
+			err = fmt.Errorf("%v", r)
+			return
+		}
+	}()
 	if q.Len() == 0 {
-		return nil
+		return nil, err
 	}
 	Type := reflect.TypeOf(q.list[0])
 	list := reflect.MakeSlice(reflect.SliceOf(Type), 0, q.Len())
 	for _, item := range q.list {
 		list = reflect.Append(list, reflect.ValueOf(item))
 	}
-	return list.Interface()
+	return list.Interface(), err
 }
