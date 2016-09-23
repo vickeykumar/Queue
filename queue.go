@@ -44,6 +44,16 @@ func (q *Queue) Dequeue() (item interface{}, err error) {
 	return
 }
 
+// returns true if Queue contains the item
+func (q *Queue) Contains(item interface{}) bool {
+	for _, i := range q.list {
+		if i == item {
+			return true
+		}
+	}
+	return false
+}
+
 // returns nil if queue is empty else returns the queue as a slice
 // error in case if items are of different types in queue.
 func (q *Queue) ToSlice() (slice interface{}, err error) {
