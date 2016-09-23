@@ -1,2 +1,2 @@
 # Queue
-Golang Package to create a Queue and perform rugular Queue operations
+Golang Package to create a Queue of any DataType and perform rugular Queue operations.
