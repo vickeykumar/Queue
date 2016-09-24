@@ -7,14 +7,12 @@ import (
 
 type Queue struct {
 	list []interface{}
-	MAX  int
 }
 
 // returns a pointer to Queue
 func NewQueue(MaxSize int) *Queue {
 	q := new(Queue)
-	q.list = make([]interface{}, 0)
-	q.MAX = MaxSize
+	q.list = make([]interface{}, 0, MaxSize)
 	return q
 }
 
@@ -23,9 +21,17 @@ func (q *Queue) Len() int {
 	return len(q.list)
 }
 
+func (q *Queue) Cap() int {
+	return cap(q.list)
+}
+
+func (q *Queue) Clear() {
+	q.list = nil
+}
+
 // appends an item to the rear of queue
 func (q *Queue) Enqueue(item interface{}) (err error) {
-	if q.Len() == q.MAX {
+	if q.Len() == q.Cap() {
 		err = fmt.Errorf("Buffer Overflow: MaxSize Allowed: %d", q.MAX)
 	} else {
 		q.list = append(q.list, item)
