@@ -21,10 +21,12 @@ func (q *Queue) Len() int {
 	return len(q.list)
 }
 
+// Returns Max capacity of Queue
 func (q *Queue) Cap() int {
 	return cap(q.list)
 }
 
+// Clears the Queue
 func (q *Queue) Clear() {
 	q.list = nil
 }
@@ -32,7 +34,7 @@ func (q *Queue) Clear() {
 // appends an item to the rear of queue
 func (q *Queue) Enqueue(item interface{}) (err error) {
 	if q.Len() == q.Cap() {
-		err = fmt.Errorf("Buffer Overflow: MaxSize Allowed: %d", q.MAX)
+		err = fmt.Errorf("Buffer Overflow: MaxSize Allowed: %d", q.Cap())
 	} else {
 		q.list = append(q.list, item)
 	}
